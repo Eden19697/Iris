@@ -24,5 +24,5 @@ macOS 上的离线 Markdown / HTML 阅读器。一个 Swift 外壳(WKWebView)加
 - `src/home.html` — 首页
 - `review/` — 安全审查报告与可重跑的探针(`python3 review/2026-10-16/native_checks.py`)
 
-## 第三方组件(见 `vendor/`)
-marked、DOMPurify、highlight.js、KaTeX(含字体)、Mermaid,各自遵循其许可证。
+## 许可证
+本项目以 [MIT](LICENSE) 发布。`vendor/` 中的第三方组件(marked、DOMPurify、highlight.js、KaTeX、Mermaid)各自遵循其许可证,详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
