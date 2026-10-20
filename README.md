@@ -1,0 +1,28 @@
+# Iris
+
+macOS 上的离线 Markdown / HTML 阅读器。一个 Swift 外壳(WKWebView)加一个完全自包含的 `reader.html`,构建后不依赖网络。
+
+## 功能
+- Markdown(GFM)、LaTeX 公式(KaTeX)、代码高亮、Mermaid 流程图/顺序图
+- 点击图片/图表放大查看(滚轮、捏合、拖动)
+- `.mdz` 图文包:把 Markdown 与图片合成一个文件,也可打开 zip;支持「合成图文包」
+- 首页与最近打开、深色模式、目录、实时编辑预览、打印
+- HTML 文件在沙箱 iframe 中渲染
+
+## 构建
+需要 Xcode 命令行工具和 Python 3。
+
+```bash
+./build.sh
+```
+
+生成 `dist/Iris.app`(arm64 + x86_64,最低 macOS 13.3,ad-hoc 签名,未公证)。首次打开如被 Gatekeeper 拦截:右键 → 打开。
+
+## 目录
+- `src/main.swift` — 原生外壳、安全策略(`PathGuard` / `NavPolicy` / `BridgeGuard`)、`.mdz` 写入
+- `src/reader.template.html` — 阅读页模板;`build_html.py` 把 `vendor/` 里的库和字体内联成 `dist/reader.html`
+- `src/home.html` — 首页
+- `review/` — 安全审查报告与可重跑的探针(`python3 review/2026-10-16/native_checks.py`)
+
+## 第三方组件(见 `vendor/`)
+marked、DOMPurify、highlight.js、KaTeX(含字体)、Mermaid,各自遵循其许可证。
