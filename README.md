@@ -18,6 +18,9 @@
 
 生成 `dist/Iris.app`(arm64 + x86_64,最低 macOS 13.3,ad-hoc 签名,未公证)。首次打开如被 Gatekeeper 拦截:右键 → 打开。
 
+## 下载
+到 [Releases](https://github.com/Eden19697/Iris/releases) 下载 `Iris-1.0.dmg`,打开后把 Iris 拖进「应用程序」。应用未经 Apple 公证:首次打开请右键 → 打开(或在「系统设置 → 隐私与安全性」中点「仍要打开」)。自行打包:`./make_dmg.sh`。
+
 ## 构建(Windows)
 需要 Node.js 20 LTS 或更新版本。详见 [`windows/README.md`](windows/README.md)。
 
