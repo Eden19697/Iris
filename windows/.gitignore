@@ -1,0 +1,4 @@
+node_modules/
+out/
+# 由 scripts/build-reader.js 从 ../src/reader.template.html 生成
+app/reader.html

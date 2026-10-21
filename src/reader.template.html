@@ -264,7 +264,7 @@ function renderHtml(src){
   }
   let f = v.querySelector('iframe');
   if (!f) { v.innerHTML = ''; f = document.createElement('iframe'); v.appendChild(f) }
-  f.setAttribute('sandbox', 'allow-scripts allow-popups allow-forms');
+  f.setAttribute('sandbox', window.irisReader ? 'allow-scripts' : 'allow-scripts allow-popups allow-forms');
   const base = curBase ? `<base href="${curBase.replace(/"/g, '&quot;')}">` : '';
   if (curFiles) src = src.replace(/(\s(?:src|href|poster)\s*=\s*)(["'])([^"']+)\2/gi,
     (m, a, q, v) => { const u = /^([a-z][a-z0-9+.-]*:|\/\/|#)/i.test(v) ? null : resolveFile(v); return u ? a + q + u + q : m });
@@ -318,13 +318,13 @@ function resolveFile(src){
   return m.get(full) || m.get(normPath(p)) || curFiles.lower.get(full.toLowerCase()) || curFiles.byName.get(base) || null;
 }
 function makeFiles(entries, dir){   // entries: [[path, Blob]]
-  const map = new Map(), lower = new Map(), byName = new Map(), urls = [];
+  const map = new Map(), lower = new Map(), byName = new Map(), urls = [], dup = new Set();
   for (const [path, blob] of entries) {
     const u = URL.createObjectURL(blob); urls.push(u);
     const k = normPath(path);
     map.set(k, u); lower.set(k.toLowerCase(), u);
     const b = k.split('/').pop().toLowerCase();
-    if (!byName.has(b)) byName.set(b, u);
+    if (dup.has(b)) { /* 已确认重名 */ } else if (byName.has(b)) { byName.delete(b); dup.add(b) } else byName.set(b, u);
   }
   return {map, lower, byName, urls, dir: dir || ''};
 }
@@ -426,11 +426,11 @@ const openFile = f => openFiles(f ? [f] : []);
 window.loadBundleB64 = (b64, name) => {
   const bin = atob(b64), u = new Uint8Array(bin.length);
   for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
-  return loadBundle(u.buffer, name);
+  return loadBundle(u.buffer, name).catch(e => alert('打开失败:' + (e && e.message || e)));
 };
 const native = window.webkit && webkit.messageHandlers && webkit.messageHandlers.native;
 window.loadFromNative = (text, name, base) => { load(text, name, base); store.set('md:text', text); store.set('md:name', name); store.set('md:base', base || '') };
-const pickFile = () => native ? native.postMessage('open') : $('#file').click();
+const pickFile = () => window.irisReader ? irisReader.pickFile() : native ? native.postMessage('open') : $('#file').click();
 $('#open').onclick = pickFile;
 $('#file').onchange = e => { openFiles(e.target.files); e.target.value = '' };
 $('#src').onclick = () => { showSource = !showSource; render($('#editor').value) };
@@ -444,7 +444,7 @@ let depth = 0;
 addEventListener('dragenter', e => { e.preventDefault(); depth++; document.body.classList.add('dragging') });
 addEventListener('dragleave', () => { if (--depth <= 0) { depth = 0; document.body.classList.remove('dragging') } });
 addEventListener('dragover', e => e.preventDefault());
-addEventListener('drop', e => { e.preventDefault(); depth = 0; document.body.classList.remove('dragging'); openFiles(e.dataTransfer.files) });
+addEventListener('drop', e => { e.preventDefault(); depth = 0; document.body.classList.remove('dragging'); if (window.irisReader && e.dataTransfer.files.length === 1) return; openFiles(e.dataTransfer.files) });
 
 // 编辑
 let t;

@@ -1,0 +1,61 @@
+{
+  "name": "iris-windows",
+  "productName": "Iris",
+  "version": "1.0.0",
+  "description": "Offline Markdown / HTML reader (Windows)",
+  "author": "yanxi",
+  "license": "MIT",
+  "private": true,
+  "main": "app/main.js",
+  "scripts": {
+    "reader": "node scripts/build-reader.js",
+    "start": "npm run reader && electron .",
+    "dist": "npm run reader && electron-builder --win nsis portable --x64"
+  },
+  "devDependencies": {
+    "electron": "44.9.3",
+    "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "local.iris",
+    "productName": "Iris",
+    "files": [
+      "app/**/*",
+      "!app/**/*.md"
+    ],
+    "directories": {
+      "buildResources": "build",
+      "output": "out"
+    },
+    "win": {
+      "icon": "build/icon.png",
+      "signExecutable": false,
+      "fileAssociations": [
+        {
+          "ext": "md",
+          "name": "Markdown",
+          "role": "Viewer"
+        },
+        {
+          "ext": "markdown",
+          "name": "Markdown",
+          "role": "Viewer"
+        },
+        {
+          "ext": "html",
+          "name": "HTML",
+          "role": "Viewer"
+        },
+        {
+          "ext": "mdz",
+          "name": "Iris 图文包",
+          "role": "Viewer"
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
